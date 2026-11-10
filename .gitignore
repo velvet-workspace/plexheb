@@ -1,0 +1,8 @@
+# Local test output and editor state
+*.log
+*.tmp
+*.bak
+.vscode/
+.idea/
+.DS_Store
+PlexHeb-last-error.txt

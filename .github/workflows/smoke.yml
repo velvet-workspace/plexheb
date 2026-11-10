@@ -1,0 +1,17 @@
+name: Windows smoke test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate syntax and safe SRT conversion
+        shell: powershell
+        run: .\tests\Smoke.Tests.ps1

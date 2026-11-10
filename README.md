@@ -1,2 +1,50 @@
-# plexheb
-PlexHeb - one-click Hebrew SRT conversion for Plex, preserving original subtitles
+# PlexHeb — כתוביות בעברית לפלקס, בלחיצה אחת
+
+כלי קטן ל־Windows שסורק תיקיית סרטים וסדרות, מזהה קובצי `SRT` בעברית, ויוצר **עותקי כתוביות מותאמים ל־Plex** לצד המקור, ללא שינוי בקובצי המקור.
+
+## הורדה והפעלה
+
+1. הורידו את [PlexHeb-NoTerminal.vbs](./PlexHeb-NoTerminal.vbs).
+2. לחצו עליו פעמיים ב־Windows. ייפתח ממשק גרפי בלי חלון PowerShell / CMD.
+3. ברירת המחדל היא `D:\Videos`. אפשר לבחור תיקייה אחרת בממשק.
+4. **הסריקה היא גם הביצוע**: הקבצים נסרקים ומומרים תוך כדי. אין כפתור המרה נפרד.
+
+> Windows Script Host ו־Windows PowerShell 5.1 נדרשים (מובנים ברוב התקנות Windows). בארגונים שמגבילים הרצת VBS ייתכן שתידרש הרשאה מקומית.
+
+## מה הכלי עושה?
+
+- סריקה רקורסיבית של קובצי `.srt` בתיקייה הנבחרת.
+- זיהוי כתוביות בעברית ותמיכה בקידודי טקסט נפוצים, כולל Windows-1255.
+- יצירת קובץ `Movie.HEB.srt` ליד המקור ב־UTF-8 עם BOM וסימוני כיווניות.
+- דילוג על עותקי `HEB` שכבר זהים לתוצאה הצפויה.
+- דילוג על כתוביות שאינן בעברית ועל קבצים שאי אפשר לעבד בבטחה.
+- סיכום: נסרקו, נוצרו, עודכנו, ללא שינוי, לא בעברית, דורשים בדיקה.
+
+**בטיחות:** קובצי המקור לעולם אינם נמחקים, משנים שם או נכתבים מחדש. עותקי `HEB.srt` *קיימים* עשויים להתעדכן כאשר התוכן הצפוי משתנה; אין צורך להריץ על ספריית מדיה אמיתית כדי לבדוק — אפשר לבחור תיקיית ניסיון.
+
+## קובץ אחד למשתמש, מקור קריא למפתחים
+
+- [`PlexHeb-NoTerminal.vbs`](./PlexHeb-NoTerminal.vbs) — ההפצה העצמאית בלחיצה כפולה. מכילה את המנוע ב־Base64, פורסת אותו זמנית בתיקיית TEMP ומנקה בסיום.
+- [`src/PlexHeb-OneClick.ps1`](./src/PlexHeb-OneClick.ps1) — **מקור PowerShell הקריא** של אותו מנוע.
+- [`tests/Smoke.Tests.ps1`](./tests/Smoke.Tests.ps1) — בדיקות המרה ושמירת המקור על תיקייה זמנית.
+- [`CHANGELOG.md`](./CHANGELOG.md) — היסטוריית גרסאות.
+
+להרצת המנוע ישירות דרך PowerShell:
+
+```powershell
+powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\src\PlexHeb-OneClick.ps1 -Path 'D:\Videos'
+```
+
+לבדיקת CLI ללא חלון גרפי:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\src\PlexHeb-OneClick.ps1 -NoGui -Path 'C:\Temp\PlexHeb-Test'
+```
+
+## פיתוח ומעקב
+
+תקלות והצעות לשיפור מנוהלות ב־[Issues](https://github.com/velvet-workspace/plexheb/issues). שינוי מהותי מוגש ב־Pull Request עם בדיקת Windows, תוך שמירה על התאמה בין קובץ ההפצה למנוע הקריא. ראו [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+**מצב:** גרסת ניסיון ראשונה. נבדקה המרת SRT בתיקייה זמנית ב־Windows, אך לא בוצע אימות מלא מול כל פורמטי הכתוביות וגרסאות Plex.
+
+**רישוי:** המאגר ציבורי לצפייה ולניהול, אך עדיין לא הוגדר רישיון קוד פתוח. פרסום ציבורי כשלעצמו אינו מתיר שימוש חוזר בקוד מעבר לתנאי GitHub.
