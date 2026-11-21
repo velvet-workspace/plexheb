@@ -7,6 +7,13 @@ $parseErrors = $null
 [void][System.Management.Automation.Language.Parser]::ParseFile($scriptPath, [ref]$null, [ref]$parseErrors)
 if ($parseErrors.Count -gt 0) { throw ('Syntax errors: ' + (($parseErrors | ForEach-Object Message) -join '; ')) }
 
+# The release VBS is generated, not separately edited; prevent stale payloads.
+$builder = Join-Path (Split-Path -Parent $PSScriptRoot) 'scripts\Build-OneFile.ps1'
+$builderErrors = $null
+[void][System.Management.Automation.Language.Parser]::ParseFile($builder, [ref]$null, [ref]$builderErrors)
+if ($builderErrors.Count -gt 0) { throw ('Packager syntax errors: ' + (($builderErrors | ForEach-Object Message) -join '; ')) }
+& $builder -Check
+
 # Windows PowerShell 5.1 needs BOM for a source file containing Hebrew literals.
 $srcBytes = [IO.File]::ReadAllBytes($scriptPath)
 if ($srcBytes.Length -lt 3 -or $srcBytes[0] -ne 0xEF -or $srcBytes[1] -ne 0xBB -or $srcBytes[2] -ne 0xBF) { throw 'Source script must have UTF-8 BOM' }
