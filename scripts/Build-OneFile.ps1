@@ -47,15 +47,17 @@ $expected = [Text.Encoding]::ASCII.GetBytes($bundleText)
 if ($Check) {
     if (-not [IO.File]::Exists($bundlePath)) { throw 'Generated VBS is missing; run Build-OneFile.ps1' }
     $actual = [IO.File]::ReadAllBytes($bundlePath)
-    if ($actual.Length -ne $expected.Length) {
+    if (@($actual | Where-Object { $_ -gt 127 }).Count -ne 0) {
+        throw 'Generated VBS must contain ASCII only'
+    }
+    # A Windows Git checkout may transform LF to CRLF. This exception is only
+    # for line endings; all wrapper and embedded payload bytes remain checked.
+    $actualText = [Text.Encoding]::ASCII.GetString($actual)
+    $actualCanonical = $actualText.Replace($cr + $lf, $lf).Replace($cr, $lf)
+    if ($actualCanonical -cne $bundleText) {
         throw 'Generated VBS differs from source; run Build-OneFile.ps1'
     }
-    for ($i = 0; $i -lt $actual.Length; $i++) {
-        if ($actual[$i] -ne $expected[$i]) {
-            throw "Generated VBS differs at byte $i; run Build-OneFile.ps1"
-        }
-    }
-    Write-Host "PASS: deterministic one-file launcher matches source ($($expected.Length) bytes)"
+    Write-Host "PASS: deterministic one-file launcher matches source ($($expected.Length) canonical bytes)"
 } else {
     [IO.File]::WriteAllBytes($bundlePath, $expected)
     Write-Host "WROTE: deterministic PlexHeb-NoTerminal.vbs ($($expected.Length) bytes)"
