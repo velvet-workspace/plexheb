@@ -378,7 +378,7 @@ $btnBrowse.Dock = 'Fill'
 $btnBrowse.Margin = New-Object Windows.Forms.Padding(4, 5, 4, 3)
 $toolbar.Controls.Add($btnBrowse, 1, 1)
 $btnRun = New-Object Windows.Forms.Button
-$btnRun.Text = 'סרוק וצור עותקים'
+$btnRun.Text = 'סרוק והכן לפלקס'
 $btnRun.Font = New-Object Drawing.Font('Segoe UI', 10, [Drawing.FontStyle]::Bold)
 $btnRun.BackColor = $script:Blue
 $btnRun.ForeColor = [Drawing.Color]::White
@@ -582,7 +582,7 @@ function Finish-Work {
     $duration = [Math]::Round($script:Clock.Elapsed.TotalSeconds, 1)
     $prefix = if ($script:StopRequested) { 'העבודה נעצרה' } else { 'הושלם' }
     $statusText.Text = "${prefix} | $($script:Stats.Scanned) נסרקו | $($script:Stats.Created) חדשים | $($script:Stats.Updated) עודכנו | $($script:Stats.Current) ללא שינוי | $($script:Stats.Other) לא בעברית | $($script:Stats.Problem) דורשים בדיקה | ${duration} שניות"
-    $btnRun.Text = 'סרוק שוב'
+    $btnRun.Text = 'סרוק והכן לפלקס'
 }
 
 function Start-Work {

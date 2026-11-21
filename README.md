@@ -7,7 +7,7 @@
 1. הורידו את [PlexHeb-NoTerminal.vbs](./PlexHeb-NoTerminal.vbs).
 2. לחצו עליו פעמיים ב־Windows. ייפתח ממשק גרפי בלי חלון PowerShell / CMD.
 3. ברירת המחדל היא `D:\Videos`. אפשר לבחור תיקייה אחרת בממשק.
-4. **הסריקה היא גם הביצוע**: הקבצים נסרקים ומומרים תוך כדי. אין כפתור המרה נפרד.
+4. לחצו על **"סרוק והכן לפלקס"** (או אפשרו לסריקה האוטומטית לפעול). הסריקה יוצרת ומעדכנת עותקי Plex מיד; אין שלב ביצוע נפרד. הממשק מציג כמה קבצים נוצרו, עודכנו או כבר היו מעודכנים.
 
 > Windows Script Host ו־Windows PowerShell 5.1 נדרשים (מובנים ברוב התקנות Windows). בארגונים שמגבילים הרצת VBS ייתכן שתידרש הרשאה מקומית.
 
@@ -26,7 +26,9 @@
 
 - [`PlexHeb-NoTerminal.vbs`](./PlexHeb-NoTerminal.vbs) — ההפצה העצמאית בלחיצה כפולה. מכילה את המנוע ב־Base64, פורסת אותו זמנית בתיקיית TEMP ומנקה בסיום.
 - [`src/PlexHeb-OneClick.ps1`](./src/PlexHeb-OneClick.ps1) — **מקור PowerShell הקריא** של אותו מנוע.
-- [`tests/Smoke.Tests.ps1`](./tests/Smoke.Tests.ps1) — בדיקות המרה ושמירת המקור על תיקייה זמנית.
+- [`src/PlexHeb-Launcher.vbs`](./src/PlexHeb-Launcher.vbs) — מעטפת הפעלה קבועה ללא חלון מסוף.
+- [`scripts/Build-OneFile.ps1`](./scripts/Build-OneFile.ps1) — בנייה דטרמיניסטית של קובץ ההפצה מתוך שני קובצי המקור.
+- [`tests/Smoke.Tests.ps1`](./tests/Smoke.Tests.ps1) — בדיקות התאמה, המרה ושמירת המקור על תיקייה זמנית.
 - [`CHANGELOG.md`](./CHANGELOG.md) — היסטוריית גרסאות.
 
 להרצת המנוע ישירות דרך PowerShell:
@@ -39,6 +41,14 @@ powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\src\PlexHeb-OneCl
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\src\PlexHeb-OneClick.ps1 -NoGui -Path 'C:\Temp\PlexHeb-Test'
+```
+
+למפתחים: לאחר כל שינוי במנוע או במעטפת, בנו את קובץ ה־VBS מחדש ואמתו שאין סטייה במקור (Windows PowerShell 5.1):
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\Build-OneFile.ps1
+powershell.exe -NoProfile -File .\scripts\Build-OneFile.ps1 -Check
+powershell.exe -NoProfile -File .\tests\Smoke.Tests.ps1
 ```
 
 ## פיתוח ומעקב
